@@ -26,7 +26,7 @@ export FSLDIR=/opt/fsl-6.0.1
 source $FSLDIR/etc/fslconf/fsl.sh
 export USER=Flywheel
 pip install pandas
-
+pip install flywheel-sdk
 
 ##############################################################################
 # Parse configuration
@@ -69,83 +69,6 @@ hashed_data_path=`find $DATA_DIR/* -maxdepth 0`
 mv $hashed_data_path $DATA_DIR/processed
 
 
-
-# Looking for the individual nifti files
-# Face emotion
-# faceemo_file=`find $INPUT_DIR/faceemotion/* -maxdepth 0 -not -path '*/\.*' -type f -name "*.nii.gz" | head -1`
-# if [[ -z $faceemo_file ]]; then
-#   echo "$INPUT_DIR has no valid face emotion file!"
-#   exit 1
-# fi
-#
-# mkdir ${DATA_DIR}/niftis
-# mv $faceemo_file ${DATA_DIR}/niftis #this is the original script
-# mv $faceemo_file ${DATA_DIR}/niftis/faceemotion_og.nii.gz #maybe could use this to name the files more specifically??
-# echo "Listing Niftis... Do we see Face Emotion?"
-# ls $DATA_DIR/niftis
-#
-#
-# # Affective pictures; run 1
-# aff1_file=`find $INPUT_DIR/affpics1/* -maxdepth 0 -not -path '*/\.*' -type f -name "*.nii.gz" | head -1`
-# if [[ -z $aff1_file ]]; then
-#   echo "$INPUT_DIR has no valid affective pics run 1 file!"
-#   exit 1
-# fi
-#
-# mv $aff1_file ${DATA_DIR}/niftis
-# echo "Listing Niftis... Do we see AffectivePics Run 1?"
-# ls $DATA_DIR/niftis
-#
-#
-# # Affective pictures; run 2
-# aff2_file=`find $INPUT_DIR/affpics2/* -maxdepth 0 -not -path '*/\.*' -type f -name "*.nii.gz" | head -1`
-# if [[ -z $aff2_file ]]; then
-#   echo "$INPUT_DIR has no valid affective pics run 2 file!"
-#   exit 1
-# fi
-#
-# mv $aff2_file ${DATA_DIR}/niftis
-# echo "Listing Niftis... Do we see AffectivePics Run 2?"
-# ls $DATA_DIR/niftis
-#
-#
-# # Affective pictures; run 3
-# aff3_file=`find $INPUT_DIR/affpics3/* -maxdepth 0 -not -path '*/\.*' -type f -name "*.nii.gz" | head -1`
-# if [[ -z $aff3_file ]]; then
-#   echo "$INPUT_DIR has no valid affective pics run 3 file!"
-#   exit 1
-# fi
-#
-# mv $aff3_file ${DATA_DIR}/niftis
-# echo "Listing Niftis... Do we see AffectivePics Run 3?"
-# ls $DATA_DIR/niftis
-#
-#
-# # Theory of mind
-# tom_file=`find $INPUT_DIR/tom/* -maxdepth 0 -not -path '*/\.*' -type f -name "*.nii.gz" | head -1`
-# if [[ -z $tom_file ]]; then
-#   echo "$INPUT_DIR has no valid theory of mind file!"
-#   exit 1
-# fi
-#
-# mv $tom_file ${DATA_DIR}/niftis
-# echo "Listing Niftis... Do we see Theory of Mind?"
-# ls $DATA_DIR/niftis
-#
-#
-# # Emotion Regulation
-# emoreg_file=`find $INPUT_DIR/emoreg/* -maxdepth 0 -not -path '*/\.*' -type f -name "*.nii.gz" | head -1`
-# if [[ -z $emoreg_file ]]; then
-#   echo "$INPUT_DIR has no valid emotion regulation file!"
-#   exit 1
-# fi
-#
-# mv $emoreg_file ${DATA_DIR}/niftis
-# echo "Listing Niftis... Do we see Emotion Regulation?"
-# ls $DATA_DIR/niftis
-
-
-
 echo "LISTING FILES IN FLYWHEEL_BASE:"
 ls ${FLYWHEEL_BASE}
 echo ""
@@ -168,7 +91,7 @@ subject_dir=$DATA_DIR/processed/fmriprep/sub-$subject
 
 
 
-#run confund selection script
+#run confound selection script
 ${FLYWHEEL_BASE}/confound_selection.py ${subject}
 
 
