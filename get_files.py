@@ -23,11 +23,13 @@ for analysis in session.analyses:
     if 'fmriprep' in analysis.files[0].gear_info.name:
         for resultfile in analysis.files:
             if "bids-fmriprep" in resultfile.name:
-                zip_info = analysis.get_file_zip_info(resultfile)
-                print(zip_info)
+                zip_info = resultfile.get_zip_info()
+                confound_files = [member for member in zip_info.members if member.path.endswith('.tsv')]
+                for confound_file in confound_files:
+                    outfilepath = "input/%s" % os.path.split(confound_file.path)[1]
+                    print("Downloading tsv file %s" % outfilepath)
+                    analysis.download_file_zip_member(resultfile.name,confound_file.path,outfilepath)
                 fmriprepfound = True
-                # print("Downloading fmriprep file %s" % resultfile.name)
-                # resultfile.download('input/fmriprep.zip')
             
 
 if not fmriprepfound:
