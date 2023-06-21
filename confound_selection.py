@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/opt/conda/bin/python
 
 import os
 import shutil
@@ -29,7 +29,7 @@ for i in range(len(og_task_names)):
 	new_name = new_task_names[i]
 	print("Working on task %s" % og_name)
 
-	conf_file = "%s/fmriprep/sub-%s/ses-KaplanAFFINTAffectiveIntelligence/func/sub-%s_ses-KaplanAFFINTAffectiveIntelligence_task-%s_desc-confounds_timeseries.tsv" % (DATA_DIR, subject, subject, og_name)
+	conf_file = "%s/processed/fmriprep/sub-%s/ses-KaplanAFFINTAffectiveIntelligence/func/sub-%s_ses-KaplanAFFINTAffectiveIntelligence_task-%s_desc-confounds_timeseries.tsv" % (DATA_DIR, subject, subject, og_name)
 
 	confs = pd.read_csv(conf_file,sep='\t')
 
@@ -37,7 +37,7 @@ for i in range(len(og_task_names)):
 
 	newdf = confs.loc[:, confs.columns.isin(target_cols) | confs.columns.str.contains('motion') | confs.columns.str.contains('aroma')]
 
-	final_file = "%s/fmriprep/sub-%s/ses-KaplanAFFINTAffectiveIntelligence/sub-%s_confounds_%s.tsv" % (DATA_DIR, subject, subject, new_name)
+	final_file = "%s/processed/fmriprep/sub-%s/ses-KaplanAFFINTAffectiveIntelligence/sub-%s_confounds_%s.tsv" % (DATA_DIR, subject, subject, new_name)
 
 	newdf.to_csv(final_file,sep="\t")
 

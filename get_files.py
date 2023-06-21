@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/opt/conda/bin/python
 
 import os,sys
 import flywheel
@@ -23,9 +23,11 @@ for analysis in session.analyses:
     if 'fmriprep' in analysis.files[0].gear_info.name:
         for resultfile in analysis.files:
             if "bids-fmriprep" in resultfile.name:
+                zip_info = analysis.get_file_zip_info(resultfile)
+                print(zip_info)
                 fmriprepfound = True
-                print("Downloading fmriprep file %s" % resultfile.name)
-                resultfile.download('input/fmriprep.zip')
+                # print("Downloading fmriprep file %s" % resultfile.name)
+                # resultfile.download('input/fmriprep.zip')
             
 
 if not fmriprepfound:

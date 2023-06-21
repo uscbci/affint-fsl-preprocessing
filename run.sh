@@ -22,11 +22,11 @@ NC='\033[0m'
 ###############################################################################
 # Configure the ENV
 
-export FSLDIR=/opt/fsl-6.0.1
+export FSLDIR=/usr/local/fsl
 source $FSLDIR/etc/fslconf/fsl.sh
 export USER=Flywheel
-pip install pandas
-pip install flywheel-sdk
+source ~/.bashrc
+
 
 ##############################################################################
 # Parse configuration
@@ -55,7 +55,7 @@ ${FLYWHEEL_BASE}/get_files.py
 ls $INPUT_DIR
 
 
-fmriprep_file=`find $INPUT_DIR/fmriprep/* -maxdepth 0 -not -path '*/\.*' -type f -name "*.zip" | head -1`
+fmriprep_file="${INPUT_DIR}/fmriprep.zip"
 if [[ -z $fmriprep_file ]]; then
   echo "$INPUT_DIR has no valid fmriprep files!"
   exit 1
@@ -64,7 +64,7 @@ fi
 # ###UNZIP THE FMRIPREP FILE AND RENAME THE FOLDER
 DATA_DIR=$FLYWHEEL_BASE/data
 mkdir $DATA_DIR
-unzip $fmriprep_file -d $DATA_DIR
+/usr/bin/unzip $fmriprep_file -d $DATA_DIR
 hashed_data_path=`find $DATA_DIR/* -maxdepth 0`
 mv $hashed_data_path $DATA_DIR/processed
 
@@ -93,7 +93,7 @@ subject_dir=$DATA_DIR/processed/fmriprep/sub-$subject
 
 #run confound selection script
 ${FLYWHEEL_BASE}/confound_selection.py ${subject}
-
+ls ${subject_dir}/ses-KaplanAFFINTAffectiveIntelligence
 
 ####################################################################
 # FSL PREPROCESSING ANALYSIS
@@ -105,7 +105,7 @@ affint_tasks=(faceemotion affpics1 affpics2 affpics3 tom emoreg)
 for task in ${affint_tasks[@]}; do
   echo "Working on $task for $subject"
 
-  INPUT_DATA=${DATA_DIR}/niftis/${task}_og.nii.gz
+  INPUT_DATA=${INPUT_DIR}/${task}_original.nii.gz
   if [[ -z $INPUT_DATA ]]; then
     echo "$INPUT_DIR has no valid ${task} file!"
   else
@@ -145,6 +145,8 @@ for task in ${affint_tasks[@]}; do
     echo Starting FEAT Preprocessing for Task ${task}...
   	time feat ${DESIGN_FILE}
   	FEAT_EXIT_STATUS=$?
+
+    cp ${DESIGN_FILE} ${OUTPUT_DIR}/${DESIGN_FILE}
 
   	if [[ $FEAT_EXIT_STATUS == 0 ]]; then
   	  echo -e "FEAT completed successfully!"
