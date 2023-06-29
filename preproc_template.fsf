@@ -33,10 +33,10 @@ set fmri(sscleanup_yn) 0
 set fmri(outputdir) "^FEAT_OUTPUT_DIR^"
 
 # TR(s)
-set fmri(tr) 3.0
+set fmri(tr) ^NUMTIMEPOINTS^
 
 # Total volumes
-set fmri(npts) ^NUMTIMEPOINTS^
+set fmri(npts) 0
 
 # Delete volumes
 set fmri(ndelete) 0
@@ -106,7 +106,7 @@ set fmri(st) 0
 set fmri(st_file) ""
 
 # BET brain extraction
-set fmri(bet_yn) 1
+set fmri(bet_yn) 0
 
 # Spatial smoothing FWHM (mm)
 set fmri(smooth) 5
@@ -118,7 +118,7 @@ set fmri(norm_yn) 0
 set fmri(perfsub_yn) 0
 
 # Highpass temporal filtering
-set fmri(temphp_yn) 1
+set fmri(temphp_yn) 0
 
 # Lowpass temporal filtering
 set fmri(templp_yn) 0
@@ -130,13 +130,13 @@ set fmri(melodic_yn) 0
 set fmri(stats_yn) 1
 
 # Carry out prewhitening?
-set fmri(prewhiten_yn) 1
+set fmri(prewhiten_yn) 0
 
 # Add motion parameters to model
 # 0 : No
 # 1 : Yes
 set fmri(motionevs) 0
-set fmri(motionevsbeta) "^CONFOUND_CSV^"
+set fmri(motionevsbeta) ""
 set fmri(scriptevsbeta) ""
 
 # Robust outlier detection in FLAME?
@@ -263,16 +263,19 @@ set fmri(regstandard_nonlinear_yn) 0
 set fmri(regstandard_nonlinear_warpres) 10
 
 # High pass filter cutoff
-set fmri(paradigm_hp) 100
+set fmri(paradigm_hp) 60
 
 # Number of lower-level copes feeding into higher-level analysis
 set fmri(ncopeinputs) 0
 
 # 4D AVW data or FEAT directory (1)
-set feat_files(1) ""
+set feat_files(1) "^INPUT_DATA^"
 
 # Add confound EVs text file
-set fmri(confoundevs) 0
+set fmri(confoundevs) 1
+
+# Confound EVs text file for analysis 1
+set confoundev_files(1) "^CONFOUND_CSV^"
 
 # EV 1 title
 set fmri(evtitle1) ""
