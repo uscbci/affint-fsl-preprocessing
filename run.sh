@@ -1,6 +1,6 @@
 #! /bin/bash
 #
-#
+# 
 
 
 ###############################################################################
@@ -45,8 +45,7 @@ function parse_config {
 }
 
 ###############################################################################
-##################### CHANGING FROM HERE RL 6.12.23 #####################
-# INPUT Files
+# Gather input files
 
 #run script to get input files
 ${FLYWHEEL_BASE}/get_files.py
@@ -54,53 +53,39 @@ ${FLYWHEEL_BASE}/get_files.py
 #echo Lets look inside $INPUT_DIR
 ls $INPUT_DIR
 
-
-fmriprep_file="${INPUT_DIR}/fmriprep.zip"
-if [[ -z $fmriprep_file ]]; then
-  echo "$INPUT_DIR has no valid fmriprep files!"
-  exit 1
-fi
-#
-# ###UNZIP THE FMRIPREP FILE AND RENAME THE FOLDER
-DATA_DIR=$FLYWHEEL_BASE/data
-mkdir $DATA_DIR
-/usr/bin/unzip $fmriprep_file -d $DATA_DIR
-hashed_data_path=`find $DATA_DIR/* -maxdepth 0`
-mv $hashed_data_path $DATA_DIR/processed
-
-
 echo "LISTING FILES IN FLYWHEEL_BASE:"
 ls ${FLYWHEEL_BASE}
 echo ""
 echo ""
 
+###############################################################################
+# Determine Subject ID
 
-##GET SUBJECT ID
-subfolder=`find $DATA_DIR/processed/fmriprep/sub-* -maxdepth 0 | head -1`
+subfolder=`find $INPUT_DIR/sub-* -maxdepth 0 | head -1`
 echo "Testing length of $subfolder: ${#subfolder}"
-if [[ ${#subfolder} > 45 ]]
+if [[ ${#subfolder} > 123 ]]
 then
   echo "3digit subject number detected"
-  subject=${subfolder: -5}
+  subject=${subfolder: 23:5}
 else
   echo "2digit subject number detected"
-  subject=${subfolder: -4}
+  subject=${subfolder: 23:4}
 fi
 
-subject_dir=$DATA_DIR/processed/fmriprep/sub-$subject
+echo "Subject is $subject"
 
+###############################################################################
+# Select confounds to regress out
 
-
-#run confound selection script
 ${FLYWHEEL_BASE}/confound_selection.py ${subject}
-ls ${subject_dir}/ses-KaplanAFFINTAffectiveIntelligence
+ls ${INPUT_DIR}
 
 ####################################################################
 # FSL PREPROCESSING ANALYSIS
 ####################################################################
-####### Changed RL 6.13.23 #######
 
 affint_tasks=(faceemotion affpics1 affpics2 affpics3 tom emoreg)
+
 
 for task in ${affint_tasks[@]}; do
   echo "Working on $task for $subject"
@@ -110,7 +95,7 @@ for task in ${affint_tasks[@]}; do
     echo "$INPUT_DIR has no valid ${task} file!"
   else
     FEAT_OUTPUT_DIR=${OUTPUT_DIR}/${subject}_preprocessed_${task}.feat
-    CONFOUND_CSV=${subject_dir}/ses-KaplanAFFINTAffectiveIntelligence/sub-${subject}_confounds_${task}.tsv
+    CONFOUND_CSV=${INPUT_DIR}/sub-${subject}_confounds_${task}.tsv
 
 
     TEMPLATE=$FLYWHEEL_BASE/preproc_template.fsf
@@ -119,8 +104,6 @@ for task in ${affint_tasks[@]}; do
 
     #Check number of timepoints in data
     NUMTIMEPOINTS=`fslinfo ${INPUT_DATA} | grep ^dim4 | awk {'print $2'}`
-
-
 
     VAR_STRINGS=( INPUT_DATA FEAT_OUTPUT_DIR CONFOUND_CSV NUMTIMEPOINTS)
 
@@ -146,8 +129,6 @@ for task in ${affint_tasks[@]}; do
   	time feat ${DESIGN_FILE}
   	FEAT_EXIT_STATUS=$?
 
-    cp ${DESIGN_FILE} ${OUTPUT_DIR}/${DESIGN_FILE}
-
   	if [[ $FEAT_EXIT_STATUS == 0 ]]; then
   	  echo -e "FEAT completed successfully!"
   	fi
@@ -155,21 +136,18 @@ for task in ${affint_tasks[@]}; do
   	echo What have we got now
   	ls ${OUTPUT_DIR}
 
-    # Upon success, convert index to a webpage
-  	if [[ $FEAT_EXIT_STATUS == 0 ]]; then
-  	  # Convert index to standalone index
-  	  echo "$CONTAINER  generating output html..."
-  	  output_html_files=$(find ${FEAT_OUTPUT_DIR} -type f -name "report_poststats.html")
-  	  for f in $output_html_files; do
-  	    web2htmloutput=${OUTPUT_DIR}/${subject}_affpics_run${RUN}_`basename $f`
-  	    python /opt/webpage2html/webpage2html.py -q -s "$f" > "$web2htmloutput"
-  	  done
-  	fi
-
   fi
 
 done
 
+####################################################################
+# Move residuals to standard space
+
+${FLYWHEEL_BASE}/apply_ants_registrations.py ${subject}
+
+
+####################################################################
+# Zip up outputs for flywheel
 
 
 for task in ${affint_tasks[@]}
@@ -180,17 +158,16 @@ do
   else
     echo feat directory is ${FEAT_OUTPUT_DIR}
 
-    if [[ $FEAT_EXIT_STATUS == 0 ]]; then
+    echo -e "${CONTAINER}  Compressing outputs..."
 
-      echo -e "${CONTAINER}  Compressing outputs..."
+    # Zip and move the relevant files to the output directory
+    zip -rq ${OUTPUT_DIR}/${subject}_preprocessed_${task}.zip ${FEAT_OUTPUT_DIR}
+    rm -rf ${FEAT_OUTPUT_DIR}
 
-      # Zip and move the relevant files to the output directory
-      zip -rq ${OUTPUT_DIR}/${subject}_preprocessed_${task}.zip ${FEAT_OUTPUT_DIR}
-      rm -rf ${FEAT_OUTPUT_DIR}
-
-    fi
+    
   fi
 done
+
 
 echo Lets see what we have after zipping etc
 ls ${OUTPUT_DIR}

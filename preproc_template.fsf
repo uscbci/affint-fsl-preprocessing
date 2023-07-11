@@ -33,10 +33,10 @@ set fmri(sscleanup_yn) 0
 set fmri(outputdir) "^FEAT_OUTPUT_DIR^"
 
 # TR(s)
-set fmri(tr) ^NUMTIMEPOINTS^
+set fmri(tr) 2.0
 
 # Total volumes
-set fmri(npts) 0
+set fmri(npts) ^NUMTIMEPOINTS^
 
 # Delete volumes
 set fmri(ndelete) 0
@@ -106,7 +106,7 @@ set fmri(st) 0
 set fmri(st_file) ""
 
 # BET brain extraction
-set fmri(bet_yn) 0
+set fmri(bet_yn) 1
 
 # Spatial smoothing FWHM (mm)
 set fmri(smooth) 5
@@ -287,7 +287,7 @@ set fmri(evtitle1) ""
 # 3 : Custom (3 column format)
 # 4 : Interaction
 # 10 : Empty (all zeros)
-set fmri(shape1) 0
+set fmri(shape1) 10
 
 # Convolution (EV 1)
 # 0 : None
@@ -298,16 +298,16 @@ set fmri(shape1) 0
 # 5 : Sine basis functions
 # 6 : FIR basis functions
 # 8 : Alternate Double-Gamma
-set fmri(convolve1) 2
+set fmri(convolve1) 0
 
 # Convolve phase (EV 1)
 set fmri(convolve_phase1) 0
 
 # Apply temporal filtering (EV 1)
-set fmri(tempfilt_yn1) 1
+set fmri(tempfilt_yn1) 0
 
 # Add temporal derivative (EV 1)
-set fmri(deriv_yn1) 1
+set fmri(deriv_yn1) 0
 
 # Skip (EV 1)
 set fmri(skip1) 0

@@ -19,6 +19,7 @@ session = fw.get_session(session_id)
 
 fmriprepfound = False
 
+xfm_files = []
 for analysis in session.analyses:
     if 'fmriprep' in analysis.files[0].gear_info.name:
         for resultfile in analysis.files:
@@ -29,6 +30,12 @@ for analysis in session.analyses:
                     outfilepath = "input/%s" % os.path.split(confound_file.path)[1]
                     print("Downloading tsv file %s" % outfilepath)
                     analysis.download_file_zip_member(resultfile.name,confound_file.path,outfilepath)
+                xfm_files += [member for member in zip_info.members if "from-scanner_to-T1w" in member.path]
+                xfm_files += [member for member in zip_info.members if "from-T1w_to-MNI152NLin2009cAsym_mode-image_xfm.h5" in member.path]
+                for xfm_file in xfm_files:
+                   outfilepath = "input/%s" % os.path.split(xfm_file.path)[1]
+                   print("Downloading xfm file %s" % outfilepath)
+                   analysis.download_file_zip_member(resultfile.name,xfm_file.path,outfilepath)
                 fmriprepfound = True
             
 

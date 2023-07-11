@@ -29,7 +29,7 @@
 	"custom": {
 		"gear-builder": {
 			"category": "analysis",
-			"image": "uscbci/fmri:1.3"
+			"image": "uscbci/fmri:1.4"
 		},
 		"flywheel" : {
 			"suite" : "BCI"
