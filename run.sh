@@ -15,6 +15,8 @@ INPUT_DIR=$FLYWHEEL_BASE/input
 MANIFEST=$FLYWHEEL_BASE/manifest.json
 CONFIG_FILE=$FLYWHEEL_BASE/config.json
 
+mkdir ${INPUT_DIR}
+
 #Colors
 RED='\033[0;31m'
 NC='\033[0m'
@@ -63,7 +65,7 @@ echo ""
 
 subfolder=`find $INPUT_DIR/sub-* -maxdepth 0 | head -1`
 echo "Testing length of $subfolder: ${#subfolder}"
-if [[ ${#subfolder} > 123 ]]
+if [[ ${#subfolder} > 115 ]]
 then
   echo "3digit subject number detected"
   subject=${subfolder: 23:5}

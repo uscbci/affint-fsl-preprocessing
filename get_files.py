@@ -11,17 +11,19 @@ CONFIG_FILE_PATH = '/flywheel/v0/config.json'
 with open(CONFIG_FILE_PATH) as config_file:
     config = json.load(config_file)
 
-api_key = config['inputs']['api_key']['key']
-session_id = config['destination']['id']
+api_key = config['inputs']['api-key']['key']
+analysis_id = config['destination']['id']
 
 fw = flywheel.Client(api_key)
+anal = fw.get_analysis(analysis_id)
+session_id = anal.parent.id
 session = fw.get_session(session_id)
 
 fmriprepfound = False
 
 xfm_files = []
 for analysis in session.analyses:
-    if 'fmriprep' in analysis.files[0].gear_info.name:
+    if 'fmriprep' in analysis.gear_info.name:
         for resultfile in analysis.files:
             if "bids-fmriprep" in resultfile.name:
                 zip_info = resultfile.get_zip_info()
