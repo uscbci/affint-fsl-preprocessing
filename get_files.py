@@ -64,7 +64,7 @@ else:
                         print("Checked 234 TRs correct")
                     else:
                         print("WARNING!!! %d TRs detected" % numtrs)
-                if "task-emoreg_run-01" in filename:
+                if "task-emotionregulation_run-01" in filename:
                     print("Downloading emoreg...")
                     file.download('input/emoreg_original.nii.gz')
                     numtrs = int(sp.check_output("fslinfo input/emoreg_original",shell=True).split()[9])
