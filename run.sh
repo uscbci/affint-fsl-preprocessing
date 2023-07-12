@@ -153,7 +153,7 @@ do
   echo "fslmaths ${FEAT_OUTPUT_DIR}/mask -mul 10000 ${FEAT_OUTPUT_DIR}/mask_high"
   fslmaths ${FEAT_OUTPUT_DIR}/mask -mul 10000 ${FEAT_OUTPUT_DIR}/mask_high
   echo "fslmaths ${FEAT_OUTPUT_DIR}/stats/res4d -add ${FEAT_OUTPUT_DIR}/mask_high $FEAT_OUPUT_DIR/stats/res4d_high"
-  fslmaths ${FEAT_OUTPUT_DIR}/stats/res4d -add ${FEAT_OUPUT_DIR}/mask_high $FEAT_OUPUT_DIR/stats/res4d_high
+  fslmaths ${FEAT_OUTPUT_DIR}/stats/res4d -add ${FEAT_OUTPUT_DIR}/mask_high $FEAT_OUTPUT_DIR/stats/res4d_high
 done
 
 ${FLYWHEEL_BASE}/apply_ants_registrations.py ${subject}
