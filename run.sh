@@ -150,7 +150,9 @@ for task in ${affint_tasks[@]}
 do
   FEAT_OUTPUT_DIR=${OUTPUT_DIR}/${subject}_preprocessed_${task}.feat
   echo FEAT_OUTPUT_DIR is ${FEAT_OUTPUT_DIR}
+  echo "fslmaths ${FEAT_OUTPUT_DIR}/mask -mul 10000 ${FEAT_OUTPUT_DIR}/mask_high"
   fslmaths ${FEAT_OUTPUT_DIR}/mask -mul 10000 ${FEAT_OUTPUT_DIR}/mask_high
+  echo "fslmaths ${FEAT_OUTPUT_DIR}/stats/res4d -add ${FEAT_OUTPUT_DIR}/mask_high $FEAT_OUPUT_DIR/stats/res4d_high"
   fslmaths ${FEAT_OUTPUT_DIR}/stats/res4d -add ${FEAT_OUPUT_DIR}/mask_high $FEAT_OUPUT_DIR/stats/res4d_high
 done
 
