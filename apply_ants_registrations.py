@@ -16,7 +16,7 @@ task_num = 0
 for task in tasks:
 
     task_name = task_names[task_num]
-    input_image = "/flywheel/v0/output/%s_preprocessed_%s.feat/stats/res4d.nii.gz" % (subject,task_name)
+    input_image = "/flywheel/v0/output/%s_preprocessed_%s.feat/stats/res4d_high.nii.gz" % (subject,task_name)
     output_image = "/flywheel/v0/output/%s_%s_cleaned_standard.nii.gz" % (subject,task_name)
 
     scanner2T1xform = "%s/sub-%s_ses-KaplanAFFINTAffectiveIntelligence_task-%s_from-scanner_to-T1w_mode-image_xfm.txt" % (pathbase,subject,task)

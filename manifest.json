@@ -2,7 +2,7 @@
 	"name": "affint-fsl-preprocessing",
 	"label": "BCI: Affective Intelligence PreProcessing with FSL",
 	"description": "This gear does basic preprocessing using FEAT for the Affective Intelligence project.",
-	"version": "1.6",
+	"version": "1.7",
 	"inputs": {
 		"api-key": {
 			"base": "api-key"
